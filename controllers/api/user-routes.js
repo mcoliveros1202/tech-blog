@@ -35,7 +35,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// POST /aip/users
+// POST /api/users
 router.post('/', (req, res) => {
     // expects {username: 'Poogs3", password: 'password1234'}
     User.create({
@@ -49,10 +49,38 @@ router.post('/', (req, res) => {
     });
 });
 
+// POST /api/users/login
+router.post('/login', (req, res) => {
+    // Query operation
+    // expects {username: 'poogs3', password: 'password: 1234'}
+    User.findOne({
+        where: {
+            username: req.body.username
+        }
+    })
+    .then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user with that username!' });
+            return;
+        }
+        // res.json({ user: dbUserData });
+
+        // Verify user
+        const validPassword = dbUserData.checkPassword(req.body.password);
+
+        if(!validPassword) {
+            res.status(400).json({ message: 'Incorrect password! '});
+            return;
+        }
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
+    });
+});
+
 // PUT /api/users/1
 router.put('/:id', (req, res) => {
     // expects {username: 'Poogs3', password: 'password 1234'}
     User.update(req.body, {
+        individualHooks: true,
         where: {
             id: req.params.id
         }
