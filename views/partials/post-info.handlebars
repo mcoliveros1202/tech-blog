@@ -4,7 +4,7 @@
         <span>{{content}}</span>
       </div>
       <div class="meta">
-       Created by {{user.username}} on {{create_at}}|
-        <a href="/post/{{id}}">{{comments.length}} comment(s)</a>
+       Created by {{user.username}} on {{format_date created_at}} |
+        <a href="/post/{{id}}">{{comments.length}} {{format_plural "comment" comments.length}}</a>
       </div>
     </article>
